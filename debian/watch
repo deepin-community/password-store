@@ -1,0 +1,2 @@
+version=3
+https://www.passwordstore.org/ .*/password-store-([\d.]+).tar.xz

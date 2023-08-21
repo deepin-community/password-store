@@ -1,0 +1,26 @@
+From 00f0eac07d7b8d53b98a6a6d176df7cd0793822f Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@debian.org>
+Date: Tue, 9 May 2017 11:14:06 +0100
+Subject: Run gpg with LC_ALL=C in reencryption test
+
+Forwarded: no
+Last-Update: 2018-06-15
+
+Patch-Name: test-reencryption-c-locale.patch
+---
+ tests/t0300-reencryption.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/t0300-reencryption.sh b/tests/t0300-reencryption.sh
+index 3c88987..e0ab445 100755
+--- a/tests/t0300-reencryption.sh
++++ b/tests/t0300-reencryption.sh
+@@ -10,7 +10,7 @@ canonicalize_gpg_keys() {
+ 	$GPG --list-keys --with-colons "$@" | sed -n 's/sub:[^:]*:[^:]*:[^:]*:\([^:]*\):[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[a-zA-Z]*e[a-zA-Z]*:.*/\1/p' | LC_ALL=C sort -u
+ }
+ gpg_keys_from_encrypted_file() {
+-	$GPG -v --no-secmem-warning --no-permission-warning --decrypt --list-only --keyid-format long "$1" 2>&1 | grep "public key is" | cut -d ' ' -f 5 | LC_ALL=C sort -u
++	LC_ALL=C $GPG -v --no-secmem-warning --no-permission-warning --decrypt --list-only --keyid-format long "$1" 2>&1 | grep "public key is" | cut -d ' ' -f 5 | LC_ALL=C sort -u
+ }
+ gpg_keys_from_group() {
+ 	local output="$($GPG --list-config --with-colons | sed -n "s/^cfg:group:$1:\\(.*\\)/\\1/p" | head -n 1)"
