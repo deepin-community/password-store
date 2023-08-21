@@ -1,4 +1,23 @@
 #!/usr/bin/make -f
-
 %:
 	dh $@
+
+override_dh_auto_test:
+	set -e; \
+	tmp="$$(mktemp -d)"; \
+	code=0; \
+	dh_auto_test -- PASS_TEST_OPTS="--root=$$tmp" || code="$$?"; \
+	rm -rf "$$tmp"; \
+	exit "$$code"
+
+override_dh_auto_install:
+	$(MAKE) DESTDIR=$$(pwd)/debian/pass PREFIX=/usr \
+		ZSHCOMPDIR=/usr/share/zsh/vendor-completions \
+		WITH_ALLCOMP=yes \
+		install
+
+override_dh_installexamples:
+	dh_installexamples -X.gitignore
+
+override_dh_compress:
+	dh_compress -X.el

@@ -1,0 +1,2 @@
+contrib/vim/redact_pass.txt usr/share/vim-redact-pass/doc
+contrib/vim/redact_pass.vim usr/share/vim-redact-pass/plugin

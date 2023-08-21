@@ -1,0 +1,35 @@
+From 700a274526f02cc1cf2bb81a808ee36648e2110f Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@debian.org>
+Date: Tue, 9 May 2017 11:17:53 +0100
+Subject: Copy tests/gnupg/ into trash directory for tests
+
+gpg2 currently creates a Unix socket in GNUPGHOME, which therefore needs
+to fit in 108 bytes (the maximum length for a Unix socket path).
+Copying tests/gnupg/ into the temporary trash directory makes it easier
+to set things up so that it's always in a short enough path, as well as
+avoiding accidental pollution by tests.
+
+Bug-Debian: https://bugs.debian.org/862071
+Forwarded: https://lists.zx2c4.com/pipermail/password-store/2017-May/002934.html
+Last-Update: 2017-05-09
+
+Patch-Name: temporary-gnupghome.patch
+---
+ tests/setup.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tests/setup.sh b/tests/setup.sh
+index 5d1e794..75d0ec5 100644
+--- a/tests/setup.sh
++++ b/tests/setup.sh
+@@ -49,7 +49,9 @@ if [[ ! -e $PASS ]]; then
+ fi
+ 
+ # Note: the assumption is the test key is unencrypted.
+-export GNUPGHOME="$TEST_HOME/gnupg/"
++rm -rf "$SHARNESS_TRASH_DIRECTORY/gnupg"
++cp -a "$TEST_HOME/gnupg" "$SHARNESS_TRASH_DIRECTORY/gnupg"
++export GNUPGHOME="$SHARNESS_TRASH_DIRECTORY/gnupg/"
+ chmod 700 "$GNUPGHOME"
+ GPG="gpg"
+ which gpg2 &>/dev/null && GPG="gpg2"
